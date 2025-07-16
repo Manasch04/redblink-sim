@@ -7,11 +7,11 @@
     html, body {
       margin: 0;
       padding: 0;
-      background-color: red;
-      width: 100%;
       height: 100%;
-      overflow: hidden;
+      background-color: red;
       animation: blink 0.5s infinite alternate;
+      overflow: hidden;
+      cursor: none;
     }
 
     @keyframes blink {
@@ -19,29 +19,26 @@
       100% { background-color: black; }
     }
 
-    /* Hide scrollbars */
-    ::-webkit-scrollbar {
-      display: none;
-    }
+    ::-webkit-scrollbar { display: none; }
   </style>
-  <script>
-    // Block ESC, F12, Ctrl+W etc.
-    document.addEventListener("keydown", function(e) {
-      e.preventDefault();
-      return false;
-    });
-
-    document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-      return false;
-    });
-
-    document.addEventListener("mousedown", function(e) {
-      e.preventDefault();
-      return false;
-    });
-  </script>
 </head>
 <body>
+  <script>
+    // Disable right click, keys, scroll
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("keydown", e => e.preventDefault());
+    document.addEventListener("mousedown", e => e.preventDefault());
+
+    // Try fullscreen on first interaction
+    function requestFullScreen() {
+      const el = document.documentElement;
+      const request = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+      if (request) request();
+    }
+
+    // Trigger on first move or click
+    window.addEventListener("mousemove", requestFullScreen, { once: true });
+    window.addEventListener("click", requestFullScreen, { once: true });
+  </script>
 </body>
 </html>
